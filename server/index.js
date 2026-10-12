@@ -1,37 +1,32 @@
 const express = require("express");
-const dotenvFlow = require("dotenv-flow");
-const todoRoutes = require("./routes/todoRoutes");
 const cors = require("cors");
+const mongoose = require("mongoose");
 
-// dotenv-flow is used to manage environment variables across different environments
-dotenvFlow.config();
+const todoRoutes = require("./routes/todoRoutes");
+const { baseRoot } = require("./controllers/todoController");
 
 const app = express();
 
-// allow requests from outside resources like postman, or your frontend if you choose to build that out
+// السماح للفرونت أو Postman بالاتصال
 app.use(cors());
 
-// app will serve and receive data in a JSON format
+// استقبال البيانات بصيغة JSON
 app.use(express.json());
 
-// the messenger between our app and our database
-const mongoose = require("mongoose");
-const { baseRoot } = require("./controllers/todoController");
-
-// establish connection & give yourself a message so you know when its complete
-const source = process.env.MONGODB_ATLAS_CONNECTION;
-
+// اتصال MongoDB داخل Docker عبر اسم السيرفس
 mongoose
-  .connect(source)
-  .then(() => console.log("✅ DB Connected Successfully"))
-  .catch((error) => console.log(error));
+  .connect("mongodb://mango:27017/todoDB")
+  .then(() => console.log("✅ DB Connected Successfully (Docker Compose)"))
+  .catch((error) => console.log("❌ DB Connection Error:", error));
 
+// الراوت الأساسي
 app.get("/", baseRoot);
 
+// راوت المهام
 app.use("/api", todoRoutes);
 
-const PORT = process.env.PORT || 5000;
-
+// تشغيل السيرفر داخل Docker
+const PORT = 5000;
 app.listen(PORT, () => {
-  console.log(`✅ Server is running on port ${PORT}`);
+  console.log(`✅ Server is running on port ${PORT} (Docker Compose)`);
 });

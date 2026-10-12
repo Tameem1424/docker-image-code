@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mern-config
+data:
+  MONGO_URL: "mongodb://mango:27017/todoDB"
+  VITE_API_BASE_URL: "http://mern-backend:2000/api"

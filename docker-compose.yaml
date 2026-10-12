@@ -1,0 +1,39 @@
+services:
+  backend:
+    image: tameem325/mern-stack-project:mern-backend-new-v1
+    container_name: mern-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URL=mongodb://mango:27017/todoDB
+    depends_on:
+      - mango
+    networks:
+      - mern-net
+
+  frontend:
+    image: tameem325/mern-stack-project:mern-frontend-new-v1
+    container_name: mern-frontend
+    restart: always
+    ports:
+      - "3000:80"
+    networks:
+      - mern-net
+
+  mango:
+    image: mongo:6
+    container_name: mern-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - mern-net
+
+networks:
+  mern-net:
+
+volumes:
+  mongo-data:

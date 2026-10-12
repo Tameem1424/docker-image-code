@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mern-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mern-backend
+  template:
+    metadata:
+      labels:
+        app: mern-backend
+    spec:
+      containers:
+        - name: mern-backend
+          image: tameem325/mern-stack-project:mern-backend-new-v1
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MONGO_URL
+              value: "mongodb://mango:27017/todoDB"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mern-backend
+spec:
+  selector:
+    app: mern-backend
+  ports:
+    - port: 5000
+      targetPort: 5000
+  type: ClusterIP
